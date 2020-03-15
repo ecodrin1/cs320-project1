@@ -12,8 +12,8 @@ int main(int argc, char** argv){
     string behavior;
     unsigned long long target;
     bool boolbehavior;
-    int correct1,total1,correct2,total2,correct3,total3,correct4,total4,correct5,total5,correct6,total6=0;
-    int correct7,attempted7=0;
+    //int correct1,total1,correct2,total2,correct3,total3,correct4,total4,correct5,total5,correct6,total6=0;
+    //int correct7,attempted7=0;
     // Open file for reading
     ifstream infile("./traces/short_trace1.txt"); //TODO edit to take from commandline
     // //initialize predictors 
@@ -21,6 +21,7 @@ int main(int argc, char** argv){
     predictor2* pred2= new predictor2();
     predictor3* pred3= new predictor3();
     predictor4* pred4= new predictor4();
+    predictor5* pred5= new predictor5();
     // for(int i=0; i<predictor3_PT16.size;i++) predictor3_PT16[i]=true;
     // for(int i=0; i<predictor3_PT32.size;i++) predictor3_PT32[i]=true;
     // for(int i=0; i<predictor3_PT128.size;i++) predictor3_PT128[i]=true;
@@ -59,6 +60,8 @@ int main(int argc, char** argv){
         pred4->predict4(addr);
         pred4->updatePT(boolbehavior, addr);
         //predictor5 update
+        pred5->predict5(addr);
+        pred5->update(boolbehavior, addr);
         //cout << "target=" << target << endl;
     }
     //main output: print (each on new line) "#correct,#total; " . 
@@ -68,6 +71,7 @@ int main(int argc, char** argv){
     pred2->printCorrect();
     pred3->printCorrect();
     pred4->printCorrect();
+    pred5->printCorrect();
     
 }
 

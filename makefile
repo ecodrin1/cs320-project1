@@ -1,8 +1,8 @@
-#FLAGS= -Wextra -Wall -DDEBUG -std=c++14
+FLAGS= -Wextra -Wall -DDEBUG -g -std=c++14
 
 all: predictors.o
-	g++ *.o -o predictors
+	g++ $(FLAGS) *.o -o predictors
 predictors.o: predictors.cpp predictors.h
-	g++ -c predictors.cpp -o predictors.o
+	g++ $(FLAGS) -c predictors.cpp -o predictors.o
 clean:
 	rm -rf *.o predictors
