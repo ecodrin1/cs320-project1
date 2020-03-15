@@ -48,17 +48,17 @@ int main(int argc, char** argv){
             boolbehavior=false; //cout << " -> not taken, ";
         }
         //predictor1 update
-        pred1->predict1(addr);
-        pred1->updatePT(boolbehavior, addr);
+        pred1->predict1();
+        pred1->update(boolbehavior);
         //predictor2 update
-        pred2->predict2(addr);
-        pred2->updatePT(boolbehavior, addr);
+        pred2->predict2();
+        pred2->update(boolbehavior);
         //predictor3 update
         pred3->predict3(addr);
-        pred3->updatePT(boolbehavior, addr);
+        pred3->update(boolbehavior, addr);
         //predictor4 update
         pred4->predict4(addr);
-        pred4->updatePT(boolbehavior, addr);
+        pred4->update(boolbehavior, addr);
         //predictor5 update
         pred5->predict5(addr);
         pred5->update(boolbehavior, addr);

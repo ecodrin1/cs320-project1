@@ -9,11 +9,11 @@ class predictor1{
     private:
         int correct, total=0;
     public:
-        bool predict1(unsigned long long addr){
+        bool predict1(){
             return true;
         }
-        void updatePT(bool result, unsigned long long addr){
-            if(result==predict1(addr)){
+        void update(bool result){
+            if(result==predict1()){
             //increment correct1 AND total1
             correct++; total++;
             } else total++;
@@ -29,11 +29,11 @@ class predictor2{
     private:
         int correct, total=0;
     public:
-        bool predict2(unsigned long long addr){
+        bool predict2(){
             return false;
         }
-        void updatePT(bool result, unsigned long long addr){
-            if(result==predict2(addr)){
+        void update(bool result){
+            if(result==predict2()){
             //increment correct1 AND total1
             correct++; total++;
             } else total++;
@@ -58,25 +58,25 @@ class predictor3{
     public:
         //constructor to set all predictor tables to 1 (taken)
         predictor3(){
-            for(int i=0; i<predictor3_PT16.size(); i++){
+            for(unsigned int i=0; i<predictor3_PT16.size(); i++){
                 predictor3_PT16[i]=true;
             }
-            for(int i=0; i<predictor3_PT32.size(); i++){
+            for(unsigned int i=0; i<predictor3_PT32.size(); i++){
                 predictor3_PT32[i]=true;
             }
-            for(int i=0; i<predictor3_PT128.size(); i++){
+            for(unsigned int i=0; i<predictor3_PT128.size(); i++){
                 predictor3_PT128[i]=true;
             }
-            for(int i=0; i<predictor3_PT256.size(); i++){
+            for(unsigned int i=0; i<predictor3_PT256.size(); i++){
                 predictor3_PT256[i]=true;
             }
-            for(int i=0; i<predictor3_PT512.size(); i++){
+            for(unsigned int i=0; i<predictor3_PT512.size(); i++){
                 predictor3_PT512[i]=true;
             }
-            for(int i=0; i<predictor3_PT1024.size(); i++){
+            for(unsigned int i=0; i<predictor3_PT1024.size(); i++){
                 predictor3_PT1024[i]=true;
             }
-            for(int i=0; i<predictor3_PT2048.size(); i++){
+            for(unsigned int i=0; i<predictor3_PT2048.size(); i++){
                 predictor3_PT2048[i]=true;
             }
         }
@@ -90,7 +90,7 @@ class predictor3{
             predictList[6]= predictor3_PT2048[addr%2048];
             //return predictList;
         }
-        void updatePT(bool result, unsigned long long addr){
+        void update(bool result, unsigned long long addr){
             if(predictList[0]!=result){
                 predictor3_PT16[addr%16]= !predictor3_PT16[addr%16];
                 total16++;
@@ -159,25 +159,25 @@ class predictor4{
     public:
         //constructor to set all predictor tables to 3 or 0b11 (Strongly taken)
         predictor4(){
-            for(int i=0; i<predictor4_PT16.size(); i++){
+            for(unsigned int i=0; i<predictor4_PT16.size(); i++){
                 predictor4_PT16[i]=3;
             }
-            for(int i=0; i<predictor4_PT32.size(); i++){
+            for(unsigned int i=0; i<predictor4_PT32.size(); i++){
                 predictor4_PT32[i]=3;
             }
-            for(int i=0; i<predictor4_PT128.size(); i++){
+            for(unsigned int i=0; i<predictor4_PT128.size(); i++){
                 predictor4_PT128[i]=3;
             }
-            for(int i=0; i<predictor4_PT256.size(); i++){
+            for(unsigned int i=0; i<predictor4_PT256.size(); i++){
                 predictor4_PT256[i]=3;
             }
-            for(int i=0; i<predictor4_PT512.size(); i++){
+            for(unsigned int i=0; i<predictor4_PT512.size(); i++){
                 predictor4_PT512[i]=3;
             }
-            for(int i=0; i<predictor4_PT1024.size(); i++){
+            for(unsigned int i=0; i<predictor4_PT1024.size(); i++){
                 predictor4_PT1024[i]=3;
             }
-            for(int i=0; i<predictor4_PT2048.size(); i++){
+            for(unsigned int i=0; i<predictor4_PT2048.size(); i++){
                 predictor4_PT2048[i]=3;
             }
         }
@@ -191,7 +191,7 @@ class predictor4{
             predictList[6]= predictor4_PT2048[addr%2048]>1? true:false;
             //return predictList;
         }
-        void updatePT(bool result, unsigned long long addr){
+        void update(bool result, unsigned long long addr){
             if(predictList[0]!=result){
                 //this prediction is wrong. increment total. more logic is needed to update PT
                 total16++;
@@ -427,18 +427,18 @@ class predictor5{
     private:
         std::array<int, 2048> predictor5_PT;
         bool predictList[9];
-        int correct3b,total3b, correct4b,total4b, correct5b, total5b, correct6b, total6b, correct7b, total7b, correct8b, total8b, correct9b,total9b, correct10b, total10b, correct11b, total11b= 0;
-        int GHR3, GHR4, GHR5, GHR6, GHR7, GHR8, GHR9, GHR10, GHR11=0;
+        unsigned int correct3b,total3b, correct4b,total4b, correct5b, total5b, correct6b, total6b, correct7b, total7b, correct8b, total8b, correct9b,total9b, correct10b, total10b, correct11b, total11b= 0;
+        unsigned int GHR3, GHR4, GHR5, GHR6, GHR7, GHR8, GHR9, GHR10, GHR11=0;
         //predictor4* ghr_PT;
     public:
         predictor5(){
-            for(int i=0; i<predictor5_PT.size(); i++){
+            for(unsigned int i=0; i<predictor5_PT.size(); i++){
                 predictor5_PT[i]=3; //initialize PT to TT/0b11/3
             }
         }
         void predict5(unsigned long long addr){
             //Mask GHRs with modulo
-            GHR3= GHR3%8; //8= 2^3; ensures GHR-X is X-bits
+            GHR3= GHR3%8; //ensures GHR-X is X-bits
             GHR4= GHR4%16;
             GHR5= GHR5%32;
             GHR6= GHR6%64;
@@ -449,14 +449,14 @@ class predictor5{
             GHR11= GHR11%2048;
             //index= addr xor GHR (from 3-bit to 11-bit sized GHRs)
             //guess with PT[index]
-            predictList[0]= predictor5_PT[(GHR3^(addr%8))]>1? true:false;
-            predictList[1]= predictor5_PT[(GHR4^(addr%16))]>1? true:false;
-            predictList[2]= predictor5_PT[(GHR5^(addr%32))]>1? true:false;
-            predictList[3]= predictor5_PT[(GHR6^(addr%64))]>1? true:false;
-            predictList[4]= predictor5_PT[(GHR7^(addr%128))]>1? true:false;
-            predictList[5]= predictor5_PT[(GHR8^(addr%256))]>1? true:false;
-            predictList[6]= predictor5_PT[(GHR9^(addr%512))]>1? true:false;
-            predictList[7]= predictor5_PT[(GHR10^(addr%1024))]>1? true:false;
+            predictList[0]= predictor5_PT[(GHR3^(addr%2048))]>1? true:false;
+            predictList[1]= predictor5_PT[(GHR4^(addr%2048))]>1? true:false;
+            predictList[2]= predictor5_PT[(GHR5^(addr%2048))]>1? true:false;
+            predictList[3]= predictor5_PT[(GHR6^(addr%2048))]>1? true:false;
+            predictList[4]= predictor5_PT[(GHR7^(addr%2048))]>1? true:false;
+            predictList[5]= predictor5_PT[(GHR8^(addr%2048))]>1? true:false;
+            predictList[6]= predictor5_PT[(GHR9^(addr%2048))]>1? true:false;
+            predictList[7]= predictor5_PT[(GHR10^(addr%2048))]>1? true:false;
             predictList[8]= predictor5_PT[(GHR11^(addr%2048))]>1? true:false;
         }
         void update(bool result, unsigned long long addr){
@@ -465,28 +465,28 @@ class predictor5{
             if(predictList[0]!= result){
                 total3b++;//wrong. increment total only
                 if(predictList[0]==true){
-                    predictor5_PT[(GHR3^(addr%8))]-=1;//if T is wrong, subtract 1 from PT used
-                    if(predictor5_PT[(GHR3^(addr%8))]<0){
-                        predictor5_PT[(GHR3^(addr%8))]=0;//if subtracting 1 goes below 0, set PT to 0
+                    predictor5_PT[(GHR3^(addr%2048))]-=1;//if T is wrong, subtract 1 from PT used
+                    if(predictor5_PT[(GHR3^(addr%2048))]<0){
+                        predictor5_PT[(GHR3^(addr%2048))]=0;//if subtracting 1 goes below 0, set PT to 0
                     }    
                 }
                 else if(predictList[0]==false){
-                    predictor5_PT[(GHR3^(addr%8))]+=1;//if NT is wrong, add 1 to PT
-                    if(predictor5_PT[(GHR3^(addr%8))]>3){
-                        predictor5_PT[(GHR3^(addr%8))]=3;//if adding 1 goes above 3, set PT to 3
+                    predictor5_PT[(GHR3^(addr%2048))]+=1;//if NT is wrong, add 1 to PT
+                    if(predictor5_PT[(GHR3^(addr%2048))]>3){
+                        predictor5_PT[(GHR3^(addr%2048))]=3;//if adding 1 goes above 3, set PT to 3
                     }
                 }
             } else if(predictList[0]==result){
                 total3b++; correct3b++; //correct. increment total and correct
                 if(predictList[0]==true){
-                    predictor5_PT[(GHR3^(addr%8))]+=1;//if T is right, add 1 to PT
-                    if(predictor5_PT[(GHR3^(addr%8))]>3){
-                        predictor5_PT[(GHR3^(addr%8))]=3;//if adding 1 goes above 3, set PT to 3
+                    predictor5_PT[(GHR3^(addr%2048))]+=1;//if T is right, add 1 to PT
+                    if(predictor5_PT[(GHR3^(addr%2048))]>3){
+                        predictor5_PT[(GHR3^(addr%2048))]=3;//if adding 1 goes above 3, set PT to 3
                     }
                 } else if(predictList[0]==false){
-                    predictor5_PT[(GHR3^(addr%8))]-=1;//if NT is right, subtract 1 from PT
-                    if(predictor5_PT[(GHR3^(addr%8))]<0){
-                        predictor5_PT[(GHR3^(addr%8))]=0;//if subtracting 1 goes below 0, set PT to 0
+                    predictor5_PT[(GHR3^(addr%2048))]-=1;//if NT is right, subtract 1 from PT
+                    if(predictor5_PT[(GHR3^(addr%2048))]<0){
+                        predictor5_PT[(GHR3^(addr%2048))]=0;//if subtracting 1 goes below 0, set PT to 0
                     }
                 }
             }
@@ -494,28 +494,28 @@ class predictor5{
             if(predictList[1]!= result){
                 total4b++;//wrong. increment total only
                 if(predictList[1]==true){
-                    predictor5_PT[(GHR4^(addr%16))]-=1;//if T is wrong, subtract 1 from PT used
-                    if(predictor5_PT[(GHR4^(addr%16))]<0){
-                        predictor5_PT[(GHR4^(addr%16))]=0;//if subtracting 1 goes below 0, set PT to 0
+                    predictor5_PT[(GHR4^(addr%2048))]-=1;//if T is wrong, subtract 1 from PT used
+                    if(predictor5_PT[(GHR4^(addr%2048))]<0){
+                        predictor5_PT[(GHR4^(addr%2048))]=0;//if subtracting 1 goes below 0, set PT to 0
                     }    
                 }
                 else if(predictList[1]==false){
-                    predictor5_PT[(GHR4^(addr%16))]+=1;//if NT is wrong, add 1 to PT
-                    if(predictor5_PT[(GHR4^(addr%16))]>3){
-                        predictor5_PT[(GHR4^(addr%16))]=3;//if adding 1 goes above 3, set PT to 3
+                    predictor5_PT[(GHR4^(addr%2048))]+=1;//if NT is wrong, add 1 to PT
+                    if(predictor5_PT[(GHR4^(addr%2048))]>3){
+                        predictor5_PT[(GHR4^(addr%2048))]=3;//if adding 1 goes above 3, set PT to 3
                     }
                 }
             } else if(predictList[1]==result){
                 total4b++; correct4b++; //correct. increment total and correct
                 if(predictList[1]==true){
-                    predictor5_PT[(GHR4^(addr%16))]+=1;//if T is right, add 1 to PT
-                    if(predictor5_PT[(GHR4^(addr%16))]>3){
-                        predictor5_PT[(GHR4^(addr%16))]=3;//if adding 1 goes above 3, set PT to 3
+                    predictor5_PT[(GHR4^(addr%2048))]+=1;//if T is right, add 1 to PT
+                    if(predictor5_PT[(GHR4^(addr%2048))]>3){
+                        predictor5_PT[(GHR4^(addr%2048))]=3;//if adding 1 goes above 3, set PT to 3
                     }
                 } else if(predictList[1]==false){
-                    predictor5_PT[(GHR4^(addr%16))]-=1;//if NT is right, subtract 1 from PT
-                    if(predictor5_PT[(GHR4^(addr%16))]<0){
-                        predictor5_PT[(GHR4^(addr%16))]=0;//if subtracting 1 goes below 0, set PT to 0
+                    predictor5_PT[(GHR4^(addr%2048))]-=1;//if NT is right, subtract 1 from PT
+                    if(predictor5_PT[(GHR4^(addr%2048))]<0){
+                        predictor5_PT[(GHR4^(addr%2048))]=0;//if subtracting 1 goes below 0, set PT to 0
                     }
                 }
             }
@@ -523,28 +523,28 @@ class predictor5{
             if(predictList[2]!= result){
                 total5b++;//wrong. increment total only
                 if(predictList[2]==true){
-                    predictor5_PT[(GHR5^(addr%32))]-=1;//if T is wrong, subtract 1 from PT used
-                    if(predictor5_PT[(GHR5^(addr%32))]<0){
-                        predictor5_PT[(GHR5^(addr%32))]=0;//if subtracting 1 goes below 0, set PT to 0
+                    predictor5_PT[(GHR5^(addr%2048))]-=1;//if T is wrong, subtract 1 from PT used
+                    if(predictor5_PT[(GHR5^(addr%2048))]<0){
+                        predictor5_PT[(GHR5^(addr%2048))]=0;//if subtracting 1 goes below 0, set PT to 0
                     }    
                 }
                 else if(predictList[2]==false){
-                    predictor5_PT[(GHR5^(addr%32))]+=1;//if NT is wrong, add 1 to PT
-                    if(predictor5_PT[(GHR5^(addr%32))]>3){
-                        predictor5_PT[(GHR5^(addr%32))]=3;//if adding 1 goes above 3, set PT to 3
+                    predictor5_PT[(GHR5^(addr%2048))]+=1;//if NT is wrong, add 1 to PT
+                    if(predictor5_PT[(GHR5^(addr%2048))]>3){
+                        predictor5_PT[(GHR5^(addr%2048))]=3;//if adding 1 goes above 3, set PT to 3
                     }
                 }
             } else if(predictList[2]==result){
                 total5b++; correct5b++; //correct. increment total and correct
                 if(predictList[2]==true){
-                    predictor5_PT[(GHR5^(addr%32))]+=1;//if T is right, add 1 to PT
-                    if(predictor5_PT[(GHR5^(addr%32))]>3){
-                        predictor5_PT[(GHR5^(addr%32))]=3;//if adding 1 goes above 3, set PT to 3
+                    predictor5_PT[(GHR5^(addr%2048))]+=1;//if T is right, add 1 to PT
+                    if(predictor5_PT[(GHR5^(addr%2048))]>3){
+                        predictor5_PT[(GHR5^(addr%2048))]=3;//if adding 1 goes above 3, set PT to 3
                     }
                 } else if(predictList[2]==false){
-                    predictor5_PT[(GHR5^(addr%32))]-=1;//if NT is right, subtract 1 from PT
-                    if(predictor5_PT[(GHR5^(addr%32))]<0){
-                        predictor5_PT[(GHR5^(addr%32))]=0;//if subtracting 1 goes below 0, set PT to 0
+                    predictor5_PT[(GHR5^(addr%2048))]-=1;//if NT is right, subtract 1 from PT
+                    if(predictor5_PT[(GHR5^(addr%2048))]<0){
+                        predictor5_PT[(GHR5^(addr%2048))]=0;//if subtracting 1 goes below 0, set PT to 0
                     }
                 }
             }
@@ -552,28 +552,28 @@ class predictor5{
             if(predictList[3]!= result){
                 total6b++;//wrong. increment total only
                 if(predictList[3]==true){
-                    predictor5_PT[(GHR6^(addr%64))]-=1;//if T is wrong, subtract 1 from PT used
-                    if(predictor5_PT[(GHR6^(addr%64))]<0){
-                        predictor5_PT[(GHR6^(addr%64))]=0;//if subtracting 1 goes below 0, set PT to 0
+                    predictor5_PT[(GHR6^(addr%2048))]-=1;//if T is wrong, subtract 1 from PT used
+                    if(predictor5_PT[(GHR6^(addr%2048))]<0){
+                        predictor5_PT[(GHR6^(addr%2048))]=0;//if subtracting 1 goes below 0, set PT to 0
                     }    
                 }
                 else if(predictList[3]==false){
-                    predictor5_PT[(GHR6^(addr%64))]+=1;//if NT is wrong, add 1 to PT
-                    if(predictor5_PT[(GHR6^(addr%64))]>3){
-                        predictor5_PT[(GHR6^(addr%64))]=3;//if adding 1 goes above 3, set PT to 3
+                    predictor5_PT[(GHR6^(addr%2048))]+=1;//if NT is wrong, add 1 to PT
+                    if(predictor5_PT[(GHR6^(addr%2048))]>3){
+                        predictor5_PT[(GHR6^(addr%2048))]=3;//if adding 1 goes above 3, set PT to 3
                     }
                 }
             } else if(predictList[3]==result){
                 total6b++; correct6b++; //correct. increment total and correct
                 if(predictList[3]==true){
-                    predictor5_PT[(GHR6^(addr%64))]+=1;//if T is right, add 1 to PT
-                    if(predictor5_PT[(GHR6^(addr%64))]>3){
-                        predictor5_PT[(GHR6^(addr%64))]=3;//if adding 1 goes above 3, set PT to 3
+                    predictor5_PT[(GHR6^(addr%2048))]+=1;//if T is right, add 1 to PT
+                    if(predictor5_PT[(GHR6^(addr%2048))]>3){
+                        predictor5_PT[(GHR6^(addr%2048))]=3;//if adding 1 goes above 3, set PT to 3
                     }
                 } else if(predictList[3]==false){
-                    predictor5_PT[(GHR6^(addr%64))]-=1;//if NT is right, subtract 1 from PT
-                    if(predictor5_PT[(GHR6^(addr%64))]<0){
-                        predictor5_PT[(GHR6^(addr%64))]=0;//if subtracting 1 goes below 0, set PT to 0
+                    predictor5_PT[(GHR6^(addr%2048))]-=1;//if NT is right, subtract 1 from PT
+                    if(predictor5_PT[(GHR6^(addr%2048))]<0){
+                        predictor5_PT[(GHR6^(addr%2048))]=0;//if subtracting 1 goes below 0, set PT to 0
                     }
                 }
             }
@@ -581,56 +581,56 @@ class predictor5{
             if(predictList[4]!= result){
                 total7b++;//wrong. increment total only
                 if(predictList[4]==true){
-                    predictor5_PT[(GHR7^(addr%128))]-=1;//if T is wrong, subtract 1 from PT used
-                    if(predictor5_PT[(GHR7^(addr%128))]<0){
-                        predictor5_PT[(GHR7^(addr%128))]=0;//if subtracting 1 goes below 0, set PT to 0
+                    predictor5_PT[(GHR7^(addr%2048))]-=1;//if T is wrong, subtract 1 from PT used
+                    if(predictor5_PT[(GHR7^(addr%2048))]<0){
+                        predictor5_PT[(GHR7^(addr%2048))]=0;//if subtracting 1 goes below 0, set PT to 0
                     }    
                 }
                 else if(predictList[4]==false){
-                    predictor5_PT[(GHR7^(addr%128))]+=1;//if NT is wrong, add 1 to PT
-                    if(predictor5_PT[(GHR7^(addr%128))]>3){
-                        predictor5_PT[(GHR7^(addr%128))]=3;//if adding 1 goes above 3, set PT to 3
+                    predictor5_PT[(GHR7^(addr%2048))]+=1;//if NT is wrong, add 1 to PT
+                    if(predictor5_PT[(GHR7^(addr%2048))]>3){
+                        predictor5_PT[(GHR7^(addr%2048))]=3;//if adding 1 goes above 3, set PT to 3
                     }
                 }
             } else if(predictList[4]==result){
                 total7b++; correct7b++; //correct. increment total and correct
                 if(predictList[4]==true){
-                    predictor5_PT[(GHR7^(addr%128))]+=1;//if T is right, add 1 to PT
-                    if(predictor5_PT[(GHR7^(addr%128))]>3){
-                        predictor5_PT[(GHR7^(addr%128))]=3;//if adding 1 goes above 3, set PT to 3
+                    predictor5_PT[(GHR7^(addr%2048))]+=1;//if T is right, add 1 to PT
+                    if(predictor5_PT[(GHR7^(addr%2048))]>3){
+                        predictor5_PT[(GHR7^(addr%2048))]=3;//if adding 1 goes above 3, set PT to 3
                     }
                 } else if(predictList[4]==false){
-                    predictor5_PT[(GHR7^(addr%128))]-=1;//if NT is right, subtract 1 from PT
-                    if(predictor5_PT[(GHR7^(addr%128))]<0){
-                        predictor5_PT[(GHR7^(addr%128))]=0;//if subtracting 1 goes below 0, set PT to 0
+                    predictor5_PT[(GHR7^(addr%2048))]-=1;//if NT is right, subtract 1 from PT
+                    if(predictor5_PT[(GHR7^(addr%2048))]<0){
+                        predictor5_PT[(GHR7^(addr%2048))]=0;//if subtracting 1 goes below 0, set PT to 0
                     }
                 }
             }
             if(predictList[5]!= result){
                 total8b++;//wrong. increment total only
                 if(predictList[5]==true){
-                    predictor5_PT[(GHR8^(addr%256))]-=1;//if T is wrong, subtract 1 from PT used
-                    if(predictor5_PT[(GHR8^(addr%256))]<0){
-                        predictor5_PT[(GHR8^(addr%256))]=0;//if subtracting 1 goes below 0, set PT to 0
+                    predictor5_PT[(GHR8^(addr%2048))]-=1;//if T is wrong, subtract 1 from PT used
+                    if(predictor5_PT[(GHR8^(addr%2048))]<0){
+                        predictor5_PT[(GHR8^(addr%2048))]=0;//if subtracting 1 goes below 0, set PT to 0
                     }    
                 }
                 else if(predictList[5]==false){
-                    predictor5_PT[(GHR8^(addr%256))]+=1;//if NT is wrong, add 1 to PT
-                    if(predictor5_PT[(GHR8^(addr%256))]>3){
-                        predictor5_PT[(GHR8^(addr%256))]=3;//if adding 1 goes above 3, set PT to 3
+                    predictor5_PT[(GHR8^(addr%2048))]+=1;//if NT is wrong, add 1 to PT
+                    if(predictor5_PT[(GHR8^(addr%2048))]>3){
+                        predictor5_PT[(GHR8^(addr%2048))]=3;//if adding 1 goes above 3, set PT to 3
                     }
                 }
             } else if(predictList[5]==result){
                 total8b++; correct8b++; //correct. increment total and correct
                 if(predictList[5]==true){
-                    predictor5_PT[(GHR8^(addr%256))]+=1;//if T is right, add 1 to PT
-                    if(predictor5_PT[(GHR8^(addr%256))]>3){
-                        predictor5_PT[(GHR8^(addr%256))]=3;//if adding 1 goes above 3, set PT to 3
+                    predictor5_PT[(GHR8^(addr%2048))]+=1;//if T is right, add 1 to PT
+                    if(predictor5_PT[(GHR8^(addr%2048))]>3){
+                        predictor5_PT[(GHR8^(addr%2048))]=3;//if adding 1 goes above 3, set PT to 3
                     }
                 } else if(predictList[5]==false){
-                    predictor5_PT[(GHR8^(addr%256))]-=1;//if NT is right, subtract 1 from PT
-                    if(predictor5_PT[(GHR8^(addr%256))]<0){
-                        predictor5_PT[(GHR8^(addr%256))]=0;//if subtracting 1 goes below 0, set PT to 0
+                    predictor5_PT[(GHR8^(addr%2048))]-=1;//if NT is right, subtract 1 from PT
+                    if(predictor5_PT[(GHR8^(addr%2048))]<0){
+                        predictor5_PT[(GHR8^(addr%2048))]=0;//if subtracting 1 goes below 0, set PT to 0
                     }
                 }
             }
@@ -638,28 +638,28 @@ class predictor5{
             if(predictList[6]!= result){
                 total9b++;//wrong. increment total only
                 if(predictList[6]==true){
-                    predictor5_PT[(GHR9^(addr%512))]-=1;//if T is wrong, subtract 1 from PT used
-                    if(predictor5_PT[(GHR9^(addr%512))]<0){
-                        predictor5_PT[(GHR9^(addr%512))]=0;//if subtracting 1 goes below 0, set PT to 0
+                    predictor5_PT[(GHR9^(addr%2048))]-=1;//if T is wrong, subtract 1 from PT used
+                    if(predictor5_PT[(GHR9^(addr%2048))]<0){
+                        predictor5_PT[(GHR9^(addr%2048))]=0;//if subtracting 1 goes below 0, set PT to 0
                     }    
                 }
                 else if(predictList[6]==false){
-                    predictor5_PT[(GHR9^(addr%512))]+=1;//if NT is wrong, add 1 to PT
-                    if(predictor5_PT[(GHR9^(addr%512))]>3){
-                        predictor5_PT[(GHR9^(addr%512))]=3;//if adding 1 goes above 3, set PT to 3
+                    predictor5_PT[(GHR9^(addr%2048))]+=1;//if NT is wrong, add 1 to PT
+                    if(predictor5_PT[(GHR9^(addr%2048))]>3){
+                        predictor5_PT[(GHR9^(addr%2048))]=3;//if adding 1 goes above 3, set PT to 3
                     }
                 }
             } else if(predictList[6]==result){
                 total9b++; correct9b++; //correct. increment total and correct
                 if(predictList[6]==true){
-                    predictor5_PT[(GHR9^(addr%512))]+=1;//if T is right, add 1 to PT
-                    if(predictor5_PT[(GHR9^(addr%512))]>3){
-                        predictor5_PT[(GHR9^(addr%512))]=3;//if adding 1 goes above 3, set PT to 3
+                    predictor5_PT[(GHR9^(addr%2048))]+=1;//if T is right, add 1 to PT
+                    if(predictor5_PT[(GHR9^(addr%2048))]>3){
+                        predictor5_PT[(GHR9^(addr%2048))]=3;//if adding 1 goes above 3, set PT to 3
                     }
                 } else if(predictList[6]==false){
-                    predictor5_PT[(GHR9^(addr%512))]-=1;//if NT is right, subtract 1 from PT
-                    if(predictor5_PT[(GHR9^(addr%512))]<0){
-                        predictor5_PT[(GHR9^(addr%512))]=0;//if subtracting 1 goes below 0, set PT to 0
+                    predictor5_PT[(GHR9^(addr%2048))]-=1;//if NT is right, subtract 1 from PT
+                    if(predictor5_PT[(GHR9^(addr%2048))]<0){
+                        predictor5_PT[(GHR9^(addr%2048))]=0;//if subtracting 1 goes below 0, set PT to 0
                     }
                 }
             }
@@ -667,28 +667,28 @@ class predictor5{
             if(predictList[7]!= result){
                 total10b++;//wrong. increment total only
                 if(predictList[7]==true){
-                    predictor5_PT[(GHR10^(addr%1024))]-=1;//if T is wrong, subtract 1 from PT used
-                    if(predictor5_PT[(GHR10^(addr%1024))]<0){
-                        predictor5_PT[(GHR10^(addr%1024))]=0;//if subtracting 1 goes below 0, set PT to 0
+                    predictor5_PT[(GHR10^(addr%2048))]-=1;//if T is wrong, subtract 1 from PT used
+                    if(predictor5_PT[(GHR10^(addr%2048))]<0){
+                        predictor5_PT[(GHR10^(addr%2048))]=0;//if subtracting 1 goes below 0, set PT to 0
                     }    
                 }
                 else if(predictList[7]==false){
-                    predictor5_PT[(GHR10^(addr%1024))]+=1;//if NT is wrong, add 1 to PT
-                    if(predictor5_PT[(GHR10^(addr%1024))]>3){
-                        predictor5_PT[(GHR10^(addr%1024))]=3;//if adding 1 goes above 3, set PT to 3
+                    predictor5_PT[(GHR10^(addr%2048))]+=1;//if NT is wrong, add 1 to PT
+                    if(predictor5_PT[(GHR10^(addr%2048))]>3){
+                        predictor5_PT[(GHR10^(addr%2048))]=3;//if adding 1 goes above 3, set PT to 3
                     }
                 }
             } else if(predictList[7]==result){
                 total10b++; correct10b++; //correct. increment total and correct
                 if(predictList[7]==true){
-                    predictor5_PT[(GHR10^(addr%1024))]+=1;//if T is right, add 1 to PT
-                    if(predictor5_PT[(GHR10^(addr%1024))]>3){
-                        predictor5_PT[(GHR10^(addr%1024))]=3;//if adding 1 goes above 3, set PT to 3
+                    predictor5_PT[(GHR10^(addr%2048))]+=1;//if T is right, add 1 to PT
+                    if(predictor5_PT[(GHR10^(addr%2048))]>3){
+                        predictor5_PT[(GHR10^(addr%2048))]=3;//if adding 1 goes above 3, set PT to 3
                     }
                 } else if(predictList[7]==false){
-                    predictor5_PT[(GHR10^(addr%1024))]-=1;//if NT is right, subtract 1 from PT
-                    if(predictor5_PT[(GHR10^(addr%1024))]<0){
-                        predictor5_PT[(GHR10^(addr%1024))]=0;//if subtracting 1 goes below 0, set PT to 0
+                    predictor5_PT[(GHR10^(addr%2048))]-=1;//if NT is right, subtract 1 from PT
+                    if(predictor5_PT[(GHR10^(addr%2048))]<0){
+                        predictor5_PT[(GHR10^(addr%2048))]=0;//if subtracting 1 goes below 0, set PT to 0
                     }
                 }
             }
@@ -765,7 +765,18 @@ class predictor5{
 };
 //tournament predictor (Gshare || 2-bit bimodal)
 class predictor6{
-    
+    private:
+    std::array<int, 2048> predictor6_PT;
+    public:
+    predictor6(){
+
+    }
+    void update(bool result, unsigned long long addr){
+
+    }
+    void printCorrect(){
+
+    }
 };    
 //Branch Target Buffer
 class predictor7{
