@@ -15,9 +15,12 @@ int main(int argc, char** argv){
     int correct1,total1,correct2,total2,correct3,total3,correct4,total4,correct5,total5,correct6,total6=0;
     int correct7,attempted7=0;
     // Open file for reading
-    ifstream infile("./examples/test_input.txt"); //TODO edit to take from commandline
-    // //initialize bimodal predictors 
+    ifstream infile("./traces/short_trace1.txt"); //TODO edit to take from commandline
+    // //initialize predictors 
+    predictor1* pred1= new predictor1();
+    predictor2* pred2= new predictor2();
     predictor3* pred3= new predictor3();
+    predictor4* pred4= new predictor4();
     // for(int i=0; i<predictor3_PT16.size;i++) predictor3_PT16[i]=true;
     // for(int i=0; i<predictor3_PT32.size;i++) predictor3_PT32[i]=true;
     // for(int i=0; i<predictor3_PT128.size;i++) predictor3_PT128[i]=true;
@@ -44,25 +47,27 @@ int main(int argc, char** argv){
             boolbehavior=false; //cout << " -> not taken, ";
         }
         //predictor1 update
-        if(boolbehavior==predictor1(addr)){
-            //increment correct1 AND total1
-            correct1++; total1++;
-        } else total1++;
+        pred1->predict1(addr);
+        pred1->updatePT(boolbehavior, addr);
         //predictor2 update
-        if(boolbehavior==predictor2(addr)){
-            correct2++;total2++;
-        } else total2++;
+        pred2->predict2(addr);
+        pred2->updatePT(boolbehavior, addr);
         //predictor3 update
-        bool* list3= pred3->predict3(addr);
+        pred3->predict3(addr);
         pred3->updatePT(boolbehavior, addr);
         //predictor4 update
-        
+        pred4->predict4(addr);
+        pred4->updatePT(boolbehavior, addr);
+        //predictor5 update
         //cout << "target=" << target << endl;
     }
     //main output: print (each on new line) "#correct,#total; " . 
-    std::cout<< correct1<< ","<< total1 <<"; "<< endl;
-    std::cout<< correct2<< ","<< total2 <<"; "<< endl;
+   // std::cout<< correct1<< ","<< total1 <<"; "<< endl;
+    //std::cout<< correct2<< ","<< total2 <<"; "<< endl;
+    pred1->printCorrect();
+    pred2->printCorrect();
     pred3->printCorrect();
+    pred4->printCorrect();
     
 }
 
