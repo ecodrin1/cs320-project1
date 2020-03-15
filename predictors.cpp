@@ -22,6 +22,7 @@ int main(int argc, char** argv){
     predictor3* pred3= new predictor3();
     predictor4* pred4= new predictor4();
     predictor5* pred5= new predictor5();
+    predictor6* pred6= new predictor6();
     // for(int i=0; i<predictor3_PT16.size;i++) predictor3_PT16[i]=true;
     // for(int i=0; i<predictor3_PT32.size;i++) predictor3_PT32[i]=true;
     // for(int i=0; i<predictor3_PT128.size;i++) predictor3_PT128[i]=true;
@@ -62,6 +63,12 @@ int main(int argc, char** argv){
         //predictor5 update
         pred5->predict5(addr);
         pred5->update(boolbehavior, addr);
+        //predictor6 update
+        pred6->predict6(addr);
+        pred6->update(boolbehavior, addr);
+        //predictor7 update
+        //pred7->predict7(addr);
+        //pred7->update(boolbehavior, addr);
         //cout << "target=" << target << endl;
     }
     //main output: print (each on new line) "#correct,#total; " . 
@@ -72,6 +79,8 @@ int main(int argc, char** argv){
     pred3->printCorrect();
     pred4->printCorrect();
     pred5->printCorrect();
+    pred6->printCorrect();
+    //pred7->printCorrect();
     
 }
 

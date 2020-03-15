@@ -181,6 +181,9 @@ class predictor4{
                 predictor4_PT2048[i]=3;
             }
         }
+        bool getPrediction(int index){
+            return predictList[index];
+        }
         void predict4(unsigned long long addr){
             predictList[0]= predictor4_PT16[addr%16]>1? true:false; //if 0/1, NT; if 2/3, T
             predictList[1]= predictor4_PT32[addr%32]>1? true:false;
@@ -435,6 +438,9 @@ class predictor5{
             for(unsigned int i=0; i<predictor5_PT.size(); i++){
                 predictor5_PT[i]=3; //initialize PT to TT/0b11/3
             }
+        }
+        bool getPrediction(int index){
+            return predictList[index];
         }
         void predict5(unsigned long long addr){
             //Mask GHRs with modulo
@@ -763,20 +769,60 @@ class predictor5{
         }
 
 };
-//tournament predictor (Gshare || 2-bit bimodal)
+//tournament predictor (Gshare + 2-bit bimodal)
 class predictor6{
     private:
-    std::array<int, 2048> predictor6_PT;
+        std::array<int, 2048> predictor6_ST; //instead of a predictor table, we have a selector table now
+        predictor4* bimodal; //only use 2048 entry
+        predictor5* gshare; //only use 2048 entry
+        bool prediction;
+        bool bimodal_prediction;
+        bool gshare_prediction;
+        int correct, total=0;
     public:
-    predictor6(){
-
-    }
-    void update(bool result, unsigned long long addr){
-
-    }
-    void printCorrect(){
-
-    }
+        predictor6(){
+            for(unsigned int i=0; i<predictor6_ST.size(); i++){
+                predictor6_ST[i]=0; //set ST to 00/strong Gshare
+            }
+            bimodal= new predictor4();
+            gshare= new predictor5();
+        }
+        ~predictor6(){
+            delete bimodal;
+            delete gshare;
+        }
+        void predict6(unsigned long long addr){
+            bimodal->predict4(addr);
+            gshare->predict5(addr);
+            bimodal_prediction= bimodal->getPrediction(6); //prediction from 2048 entry
+            gshare_prediction= gshare->getPrediction(8); //prediction from 2048 entry table
+            prediction= predictor6_ST[addr%2048]>1? bimodal_prediction:gshare_prediction; //10/11 for bimodal, 00,01 for gshare
+        }
+        void update(bool result, unsigned long long addr){
+            gshare->update(result, addr);
+            bimodal->update(result, addr);
+            if(result==prediction){
+                correct++; total++;
+            } else {
+                total++;
+            }
+            if(bimodal_prediction==gshare_prediction){
+                return;// do nothing, they both are really good.. or really dumb
+            } else if(result==bimodal_prediction){
+                predictor6_ST[addr%2048]+=1;// ST++ to favor bimodal, since it was right
+                if(predictor6_ST[addr%2048]>3){
+                    predictor6_ST[addr%2048]=3;//if over 3, set to 3
+                }
+            } else if(result==gshare_prediction){
+                predictor6_ST[addr%2048]-=1; //ST-- to favor gshare, since it was right
+                if(predictor6_ST[addr%2048]<0){
+                    predictor6_ST[addr%2048]=0;
+                }
+            }
+        }
+        void printCorrect(){
+            std::cout<< correct<< ","<<total<< "; "<< std::endl;
+        }  
 };    
 //Branch Target Buffer
 class predictor7{
