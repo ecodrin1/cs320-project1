@@ -425,8 +425,18 @@ class predictor4{
 //Gshare predictor
 class predictor5{
     private:
+        std::array<int, 2048> predictor5_PT;
+        int correct3b,total3b, correct4b,total4b, correct5b, total5b, correct6b, total6b, correct7b, total7b, correct8b, total8b, correct9b,total9b, correct10b, total10b, correct11b, total11b= 0;
     public:
-        bool predict5(unsigned long long addr){
+        void predict5(unsigned long long addr){
+            //index= addr xor GHR (from 3-bit to 11-bit sized GHRs)
+            //guess with PT[index]
+        }
+        void updatePT(bool result, unsigned long long addr){
+            //for each GHR size:
+                //use bimodal update on PC[index] (if right or wrong)
+        }
+        void printCorrect(){
 
         }
 
