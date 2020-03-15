@@ -6,6 +6,10 @@
 using namespace std;
 
 int main(int argc, char** argv){ 
+    if(argc<3){
+        cout<< "Expected command format: ./predictors <inputfile> <outputfile>" <<endl;
+        return 1;
+    }
 
     // Temporary variables
     unsigned long long addr;
@@ -15,7 +19,7 @@ int main(int argc, char** argv){
     //int correct1,total1,correct2,total2,correct3,total3,correct4,total4,correct5,total5,correct6,total6=0;
     //int correct7,attempted7=0;
     // Open file for reading
-    ifstream infile("./traces/short_trace1.txt"); //TODO edit to take from commandline
+    ifstream infile(argv[1]); 
     // //initialize predictors 
     predictor1* pred1= new predictor1();
     predictor2* pred2= new predictor2();
@@ -23,6 +27,7 @@ int main(int argc, char** argv){
     predictor4* pred4= new predictor4();
     predictor5* pred5= new predictor5();
     predictor6* pred6= new predictor6();
+    predictor7* pred7= new predictor7();
     // for(int i=0; i<predictor3_PT16.size;i++) predictor3_PT16[i]=true;
     // for(int i=0; i<predictor3_PT32.size;i++) predictor3_PT32[i]=true;
     // for(int i=0; i<predictor3_PT128.size;i++) predictor3_PT128[i]=true;
@@ -67,8 +72,8 @@ int main(int argc, char** argv){
         pred6->predict6(addr);
         pred6->update(boolbehavior, addr);
         //predictor7 update
-        //pred7->predict7(addr);
-        //pred7->update(boolbehavior, addr);
+        pred7->predict7(addr);
+        pred7->update(boolbehavior, addr, target);
         //cout << "target=" << target << endl;
     }
     //main output: print (each on new line) "#correct,#total; " . 
@@ -80,7 +85,8 @@ int main(int argc, char** argv){
     pred4->printCorrect();
     pred5->printCorrect();
     pred6->printCorrect();
-    //pred7->printCorrect();
+    pred7->printCorrect();
+    //write these to a file specified by argv[2]
     
 }
 

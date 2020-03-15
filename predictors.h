@@ -80,6 +80,9 @@ class predictor3{
                 predictor3_PT2048[i]=true;
             }
         }
+        bool getPrediction(int index){
+            return predictList[index];
+        }
         void predict3(unsigned long long addr){
             predictList[0]= predictor3_PT16[addr%16]; 
             predictList[1]= predictor3_PT32[addr%32];
@@ -826,7 +829,46 @@ class predictor6{
 };    
 //Branch Target Buffer
 class predictor7{
-
+    private:
+        predictor3* bimodal; //use 512 only
+        std::array<unsigned long long, 512> buffer; //buffer of.. addresses?
+        int correct, attempted=0;
+        bool bimodal_prediction;
+        unsigned long long prediction;
+    public:
+        predictor7(){
+            bimodal= new predictor3();
+            for(unsigned int i=0; i<buffer.size(); i++){
+                buffer[i]=0;
+            }
+        }
+        ~predictor7(){
+            delete bimodal;
+        }
+        void predict7(unsigned long long addr){
+            bimodal->predict3(addr);
+            bimodal_prediction= bimodal->getPrediction(4);
+            if(bimodal_prediction==true){
+                attempted++;
+                prediction= buffer[addr%512]; //we access buffer if bimodal predicts T
+            } else {
+                prediction= addr+4;
+            }
+            
+        }
+        void update(bool result, unsigned long long addr, unsigned long long target){
+            //if result is true, set buffer[] to target
+            bimodal->update(result, addr);
+            if(result==true){
+                buffer[addr%512]= target;
+            }
+            if((prediction==target)&& (bimodal_prediction==true)){
+                correct++;
+            }
+        }
+        void printCorrect(){
+            std::cout<< correct<< ","<< attempted<< "; "<< std::endl;
+        }
 };
 
 #endif
